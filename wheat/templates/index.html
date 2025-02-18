@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheat Rust Detector</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input[type="file"] { margin-top: 10px; }
+        #result { margin-top: 20px; font-size: 18px; }
+        img { margin-top: 20px; max-width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Wheat Rust Detector 🌾</h1>
+    <p>Upload an image of your wheat leaf to check for rust.</p>
+
+    <input type="file" id="fileInput">
+    <button onclick="uploadImage()">Predict</button>
+
+    <div id="result"></div>
+
+    <script>
+        function uploadImage() {
+            let fileInput = document.getElementById("fileInput").files[0];
+            let formData = new FormData();
+            formData.append("file", fileInput);
+
+            fetch("/predict", { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    let resultDiv = document.getElementById("result");
+                    resultDiv.innerHTML = `<h2>${data.result}</h2>
+                                           <p>Confidence: ${data.confidence}%</p>
+                                           <img src="${data.file_path}" width="200">`;
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
